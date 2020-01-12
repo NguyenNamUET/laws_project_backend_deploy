@@ -2,17 +2,32 @@ version: '3.7'
 
 services:
   db:
+    container_name: lawtech_db
     image: postgres
     ports:
-      - "5432:5432"
+      - "5433:5432"
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=12345678
       - POSTGRES_DB=lawtech
-      
     volumes:
       - pgdata:/var/lib/postgresql/data:rw
+
+
+  pgAdmin:
+    restart: always
+    image: dpage/pgadmin4
+    ports:
+      - "5555:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: otakuctb1231999@gmail.com
+      PGADMIN_DEFAULT_PASSWORD: otakuctb123
+    volumes:
+      - pgadmin:/var/lib/pgadmin
+
+
   web:
+    container_name: lawtech_web
     build: .
     command: python manage.py runserver 0.0.0.0:8000
     volumes:
@@ -21,5 +36,8 @@ services:
       - "8000:8000"
     depends_on:
       - db
+
+
 volumes:
     pgdata:
+    pgadmin:
