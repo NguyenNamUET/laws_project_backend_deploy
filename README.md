@@ -1,4 +1,4 @@
-# VBPL
+# Lawtech
 
 This repository will contain the sources for building the backend of the Lawtech project
 
