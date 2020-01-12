@@ -38,9 +38,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'laws',
-    'users',
-    'metainfo',
+    'apps.laws',
+    'apps.users',
+    'apps.metainfo',
 ]
 
 MIDDLEWARE = [
@@ -82,7 +82,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'USER': 'postgres',
         'PASSWORD': '12345678',
-        'HOST': 'localhost',
+        'HOST': 'db',
         'PORT': '5432',
         'NAME': 'lawtech'
     }
