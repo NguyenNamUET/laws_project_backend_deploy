@@ -20,3 +20,10 @@ Start date: 08/01/2020
     ```sh
     $ docker-compose up -d    
     ```
+
+### Populate database:
+* run 
+    ```sh
+    $ docker-compose run --rm web python3 manage.py makemigrations
+    $ docker-compose run --rm web python3 manage.py migrate 
+    ```

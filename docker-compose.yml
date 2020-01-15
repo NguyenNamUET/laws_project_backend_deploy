@@ -11,7 +11,7 @@ services:
       - POSTGRES_PASSWORD=12345678
       - POSTGRES_DB=lawtech
     volumes:
-      - pgdata:/var/lib/postgresql/data:rw
+      - pgdata:/var/lib/postgresql/data
 
 
   pgAdmin:

@@ -9,16 +9,19 @@ class DocumentMetaDataTerm(models.Model):
 
 
 class ExtractiveDocument(models.Model):
-    id = models.BigIntegerField(20, primary_key=True, unique=True)
-    title = models.CharField(max_length=45)
+    id = models.BigAutoField(20, primary_key=True, unique=True)
+    title = models.CharField(max_length=500)
     content = models.TextField()
-    description = models.TextField()
+    description = models.TextField(blank=True, null=True)
+    signer = models.CharField(max_length=255, blank=True, null=True)
+    type = models.CharField(max_length=255)
+    organization = models.CharField(max_length=225, blank=True, null=True)
     url = models.CharField(max_length=255)
-    issued_date = models.DateTimeField(null = True) #Ngày công bố
-    expiry_date = models.DateTimeField() #Ngày hết hiệu lực
-    effective_date = models.DateTimeField() #Ngày có hiệu lực
-    enforced_date = models.DateTimeField() #Ngày áp dụng
-    last_update_time = models.DateTimeField() #Ngày cập nhật văn bản (crawler)
+    issued_date = models.DateField(blank=True, null=True) #Ngày ban hành
+    expiry_date = models.DateField(blank=True, null=True) #Ngày hết hiệu lực
+    effective_date = models.DateField(blank=True, null=True) #Ngày có hiệu lực
+    enforced_date = models.DateField(blank=True, null=True) #Ngày đăng công báo
+    last_update_time = models.DateTimeField(blank=True, null=True) #Ngày cập nhật văn bản (crawler)
     is_over_due = models.PositiveSmallIntegerField(1)
 
 
@@ -31,7 +34,7 @@ class ExtractiveDocumentMetaData(models.Model):
 
 
 class RelationType(models.Model):
-    id = models.BigIntegerField(20, primary_key=True, unique=True)
+    id = models.BigAutoField(20, primary_key=True, unique=True)
     name = models.CharField(max_length=255)
     last_update_time = models.DateTimeField()  # Ngày cập nhật liên hệ của văn bản (crawler)
 
