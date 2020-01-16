@@ -14,7 +14,7 @@ class ExtractiveDocument(models.Model):
     content = models.TextField()
     description = models.TextField(blank=True, null=True)
     signer = models.CharField(max_length=255, blank=True, null=True)
-    type = models.CharField(max_length=255)
+    type = models.CharField(max_length=255, blank=True, null=True)
     organization = models.CharField(max_length=225, blank=True, null=True)
     url = models.CharField(max_length=255)
     issued_date = models.DateField(blank=True, null=True) #Ngày ban hành
@@ -22,7 +22,7 @@ class ExtractiveDocument(models.Model):
     effective_date = models.DateField(blank=True, null=True) #Ngày có hiệu lực
     enforced_date = models.DateField(blank=True, null=True) #Ngày đăng công báo
     last_update_time = models.DateTimeField(blank=True, null=True) #Ngày cập nhật văn bản (crawler)
-    is_over_due = models.PositiveSmallIntegerField(1)
+    is_over_due = models.PositiveSmallIntegerField(1, blank=True, null=True)
 
 
 class ExtractiveDocumentMetaData(models.Model):

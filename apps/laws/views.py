@@ -6,7 +6,7 @@ from rest_framework import pagination
 from rest_framework.decorators import action
 from django.db.models import F
 from rest_framework.response import Response
-
+from rest_framework import generics
 
 # Create your views here.
 class CustomPagination(pagination.LimitOffsetPagination):
@@ -18,9 +18,10 @@ class ExtractiveDocumentViewSet(viewsets.ModelViewSet):
     serializer_class = ExtractiveDocumentSerializer
     pagination_class = CustomPagination
 
+
     @action(detail=False, methods=['get'], url_path='current', url_name='get_current')
     def getCurrentIssuedDocument(self, request):
-        current_documents = ExtractiveDocument.objects.order_by(F('enforced_date').desc(nulls_last = True))[:5]
+        current_documents = ExtractiveDocument.objects.all().order_by(F('enforced_date').desc(nulls_last = True))[:5]
         serializer = self.get_serializer(current_documents, many=True)
 
         return Response(serializer.data)
@@ -43,3 +44,5 @@ class ExtractiveDocumentViewSet(viewsets.ModelViewSet):
         detail = ExtractiveDocument.objects.filter(id=pk)
         serializer = ExtractiveDocumentDetailSerializer(detail, many=True)
         return Response(serializer.data)
+
+
