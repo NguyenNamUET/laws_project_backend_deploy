@@ -15,10 +15,6 @@ from datetime import datetime
 CSV_FILE_PATH = "localdata/data.csv"
 RAW_TEXT_DIRECTORY_PATH = "localdata/data/"
 RAW_TEXT_PATH_LIST = [f for f in listdir(RAW_TEXT_DIRECTORY_PATH) if isfile(join(RAW_TEXT_DIRECTORY_PATH, f))]
-df = pd.read_csv(CSV_FILE_PATH)
-url_list = [field for field in df['url'].tolist()]
-tenvb_list = [field for field in df['Tên VB'].tolist()]
-toanvan_list = [field for field in df['Toàn văn'].tolist()]
 
 
 def str_to_dict(str):
@@ -29,16 +25,24 @@ def str_to_dict(str):
         return None
 
 
+df = pd.read_csv(CSV_FILE_PATH)
+url_list = [field for field in df['url'].tolist()]
+tenvb_list = [field for field in df['Tên VB'].tolist()]
+toanvan_list = [field for field in df['Toàn văn'].tolist()]
+# luocdo_list = [str_to_dict(field) for field in df["Lược đồ"].tolist()]
+thuoctinh_list = [str_to_dict(field) for field in df["Thuộc tính"].tolist()]
+
+
 def populate_extractive_document(apps, schema_editor):
     ExtractiveDocument = apps.get_model('laws', 'ExtractiveDocument')
-    thuoctinh_list = [str_to_dict(field) for field in df["Thuộc tính"].tolist()]
 
     for index, file in enumerate(df["Toàn văn"].tolist()):
         if file in RAW_TEXT_PATH_LIST:
             title = tenvb_list[index]
             url = url_list[index]
             if thuoctinh_list[index] is not None:
-                law_type =thuoctinh_list[index]['Loại văn bản'][0]
+                description = thuoctinh_list[index]['Thông tin'][0]
+                law_type = thuoctinh_list[index]['Loại văn bản'][0]
                 content = open(RAW_TEXT_DIRECTORY_PATH + toanvan_list[index], 'r').read()
                 if len(thuoctinh_list[index]['Cơ quan ban hành/ Chức danh / Người ký']) == 3:
                     organization = thuoctinh_list[index]['Cơ quan ban hành/ Chức danh / Người ký'][0]
@@ -76,18 +80,31 @@ def populate_extractive_document(apps, schema_editor):
                     is_over_due = 1
 
                 document = ExtractiveDocument.objects.get_or_create(title=title,
-                                              content=content,
-                                              signer=signer,
-                                              type=law_type,
-                                              organization=organization,
-                                              url=url,
-                                              issued_date=issued_date,
-                                              expiry_date=expiry_date,
-                                              effective_date=effective_date,
-                                              enforced_date=enforced_date,
-                                              is_over_due=is_over_due) #return tuple (object, created) created is Boolean
+                                                                    description=description,
+                                                                    content=content,
+                                                                    signer=signer,
+                                                                    type=law_type,
+                                                                    organization=organization,
+                                                                    url=url,
+                                                                    issued_date=issued_date,
+                                                                    expiry_date=expiry_date,
+                                                                    effective_date=effective_date,
+                                                                    enforced_date=enforced_date,
+                                                                    is_over_due=is_over_due) #return tuple (object, created) created is Boolean
                 document[0].save()
-                #Một số văn bản không có thông tin về "Thuôc tính" ~300 văn bản
+
+            else:
+                document = ExtractiveDocument.objects.get_or_create(title=title, url=url)
+                document[0].save()
+
+
+# def populate_relation_type(apps, schema_editor):
+#     RelationType = apps.get_model('laws', 'RelationType')
+#     luocdo_field_list = [ld for ld in luocdo_list[0].keys() if ld is not None]
+#     for field in luocdo_field_list:
+#         relation = RelationType.objects.get_or_create(name=field)
+#         relation.save()
+
 
 class Migration(migrations.Migration):
 

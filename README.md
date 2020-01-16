@@ -27,3 +27,13 @@ Start date: 08/01/2020
     $ docker-compose run --rm web python3 manage.py makemigrations
     $ docker-compose run --rm web python3 manage.py migrate 
     ```
+* to reapply migrations, remove all containers, images, volumes, networks
+and rerun above commands.
+    ```sh
+    $ docker system prune -a
+    $ docker container stop {container name}
+    $ docker container rm {container name}
+    $ docker image prune -a
+    $ docker volume prune
+    $ docker network prune
+    ```

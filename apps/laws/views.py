@@ -1,10 +1,12 @@
 from django.shortcuts import render
 from .models import ExtractiveDocument
-from .serializers import ExtractiveDocumentSerializer
+from .serializers import ExtractiveDocumentSerializer, ExtractiveDocumentDetailSerializer
 from rest_framework import viewsets
 from rest_framework import pagination
 from rest_framework.decorators import action
 from django.db.models import F
+from rest_framework.response import Response
+
 
 # Create your views here.
 class CustomPagination(pagination.LimitOffsetPagination):
@@ -16,28 +18,28 @@ class ExtractiveDocumentViewSet(viewsets.ModelViewSet):
     serializer_class = ExtractiveDocumentSerializer
     pagination_class = CustomPagination
 
-    #Các router tồn tại:
-    #law/ mặc định của ModelViewSet
-    #law/{pk}/ mặc định của ModelViewSet
-    #law/current/ của def getCurrentIssuedDocument
-    #law/upcoming/ của def getUpcomingEffectiveDocumnet
-
     @action(detail=False, methods=['get'], url_path='current', url_name='get_current')
     def getCurrentIssuedDocument(self, request):
-        current_document = ExtractiveDocument.objects.order_by(F('enforced_date').desc(nulls_last = True))[:100]
-        ##Note: Rerun migration && Change to issued_date
-        page = self.paginate_queryset(current_document)
-        serializer = self.get_serializer(page, many=True)
+        current_documents = ExtractiveDocument.objects.order_by(F('enforced_date').desc(nulls_last = True))[:5]
+        serializer = self.get_serializer(current_documents, many=True)
 
-        return self.get_paginated_response(serializer.data)
+        return Response(serializer.data)
 
     @action(detail=False, methods=['get'], url_path='upcoming', url_name='get_upcoming')
-    def getUpcomingEffectiveDocumnet(self, request):
-        upcoming_document = ExtractiveDocument.objects.order_by(F('effective_date').desc(nulls_last = True))[:100]
-        page = self.paginate_queryset(upcoming_document)
-        serializer = self.get_serializer(page, many=True)
+    def getUpcomingEffectiveDocument(self, request):
+        upcoming_documents = ExtractiveDocument.objects.all().order_by(F('effective_date').desc(nulls_last = True))[:5]
+        serializer = self.get_serializer(upcoming_documents, many=True)
 
-        return self.get_paginated_response(serializer.data)
+        return Response(serializer.data)
 
-    # @action(detail=False, methods=['get'], url_path='upcoming', url_name='get_upcoming')
-    # def getBoth(self, request):
+    @action(detail=True, methods=['get'], url_path='upcoming', url_name='get_upcoming_detail')
+    def retrieveCurrentDocument(self, request, pk=None):
+        detail = ExtractiveDocument.objects.filter(id=pk)
+        serializer = ExtractiveDocumentDetailSerializer(detail, many=True)
+        return Response(serializer.data)
+
+    @action(detail=True, methods=['get'], url_path='current', url_name='get_current_detail')
+    def retrieveCurrentDocument(self, request, pk=None):
+        detail = ExtractiveDocument.objects.filter(id=pk)
+        serializer = ExtractiveDocumentDetailSerializer(detail, many=True)
+        return Response(serializer.data)
