@@ -20,20 +20,35 @@ Start date: 08/01/2020
     ```sh
     $ docker-compose up -d    
     ```
+* build project with docker
+    ```sh
+    $ docker-compose up --build  
+    ```
 
 ### Populate database:
+**NOTE**: Project must include a folder "localdata" at root
+consisting of directory "data" of laws'contents
+and file 'data.csv' (describing fields of laws)
+
 * run 
     ```sh
     $ docker-compose run --rm web python3 manage.py makemigrations
     $ docker-compose run --rm web python3 manage.py migrate 
     ```
 * to reapply migrations, remove all containers, images, volumes, networks
-and rerun above commands.
     ```sh
     $ docker system prune -a
+    $ docker container ls -a
     $ docker container stop {container name}
     $ docker container rm {container name}
     $ docker image prune -a
     $ docker volume prune
     $ docker network prune
+    ```
+* after that, run commands to recreate migrations 002_auto_{yyyy/mm/dd_hour/minute}.py
+and populate database
+    ```sh
+        $ docker-compose run --rm web python3 manage.py makemigrations
+        $ docker-compose run --rm web python3 manage.py makemigrations --empty laws
+        $ docker-compose run --rm web python3 manage.py migrate
     ```

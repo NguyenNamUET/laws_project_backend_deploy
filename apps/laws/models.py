@@ -36,7 +36,7 @@ class ExtractiveDocumentMetaData(models.Model):
 class RelationType(models.Model):
     id = models.BigAutoField(20, primary_key=True, unique=True)
     name = models.CharField(max_length=255)
-    last_update_time = models.DateTimeField()  # Ngày cập nhật liên hệ của văn bản (crawler)
+    last_update_time = models.DateTimeField(blank=True, null=True)  # Ngày cập nhật liên hệ của văn bản (crawler)
 
 
 class ExtractiveDocumentSchema(models.Model):
