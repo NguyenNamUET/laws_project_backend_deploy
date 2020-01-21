@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from .models import ExtractiveDocument
-from .serializers import ExtractiveDocumentSerializer, ExtractiveDocumentDetailSerializer
+from .serializers import ExtractiveDocumentSerializer
 from rest_framework import viewsets
 from rest_framework import pagination
 from rest_framework.decorators import action
@@ -45,12 +45,45 @@ class CustomPagination(pagination.LimitOffsetPagination):
 #         detail = ExtractiveDocument.objects.filter(id=pk)
 #         serializer = ExtractiveDocumentDetailSerializer(detail, many=True)
 #         return Response(serializer.data)
+# class ExtractiveDocumentViewSet(viewsets.ModelViewSet):
+#     queryset = ExtractiveDocument.objects.all()
+#     serializer_class = ExtractiveDocumentSerializer
+#
+#
+# class ExpiredDocumentViewSet(viewsets.ModelViewSet):
+#     queryset = ExtractiveDocument.objects.all().order_by(F('expiry_date').desc(nulls_last = True))
+#     serializer_class = ExtractiveDocumentSerializer
+#
+#
+# class UpcomingEffectiveDocumentViewSet(viewsets.ModelViewSet):
+#     queryset = ExtractiveDocument.objects.all().order_by(F('effective_date').desc(nulls_last = True))
+#     serializer_class = ExtractiveDocumentSerializer
 
 class ExtractiveDocumentList(generics.ListAPIView):
-    queryset = ExtractiveDocument.objects.all()[:5]
+    queryset = ExtractiveDocument.objects.all()[:100]
     serializer_class = ExtractiveDocumentSerializer
+
+
+# class ExpiredDocument(generics.ListAPIView):
+#     queryset = ExtractiveDocument.objects.all().order_by(F('expiry_date').desc(nulls_last = True))[:5]
+#     serializer_class = ExtractiveDocumentSerializer
+#
+#
+# class UpcomingEffectiveDocument(generics.ListAPIView):
+#     queryset = ExtractiveDocument.objects.all().order_by(F('effective_date').desc(nulls_last = True))[:5]
+#     serializer_class = ExtractiveDocumentSerializer
 
 
 class ExtractiveDocumentDetail(generics.RetrieveAPIView):
     queryset = ExtractiveDocument.objects.all()
-    serializer_class = ExtractiveDocumentDetailSerializer
+    serializer_class = ExtractiveDocumentSerializer
+
+
+# class ExpiredDocumentDetail(generics.RetrieveAPIView):
+#     queryset = ExtractiveDocument.objects.all()
+#     serializer_class = ExtractiveDocumentSerializer
+#
+#
+# class UpcomingEffectiveDocumentDetail(generics.RetrieveAPIView):
+#     queryset = ExtractiveDocument.objects.all()
+#     serializer_class = ExtractiveDocumentSerializer
