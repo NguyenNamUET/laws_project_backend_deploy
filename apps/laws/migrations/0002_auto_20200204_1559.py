@@ -59,7 +59,7 @@ def populateExtractiveDocument(apps, schema_editor):
                                                                         last_update_time=last_update_time,
                                                                         is_over_due=is_over_due)  # return tuple (object, created) created is Boolean
             saved_document[0].save()
-
+#
 
 class Migration(migrations.Migration):
 
